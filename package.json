@@ -1,0 +1,15 @@
+{
+    "name": "portfolio-root",
+    "version": "1.0.0",
+    "description": "Deployment root for Portfolio",
+    "scripts": {
+        "install-server": "cd server && npm install",
+        "install-client": "cd client && npm install",
+        "build-client": "cd client && npm run build",
+        "build": "npm run install-server && npm run install-client && npm run build-client",
+        "start": "cd server && node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
