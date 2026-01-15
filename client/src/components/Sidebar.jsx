@@ -27,7 +27,7 @@ const Sidebar = ({ data, isOpen, toggleSidebar, activeSection }) => {
             <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
 
                 {/* Close button inside sidebar */}
-                <button className="menu-toggle" style={{ position: 'absolute', top: '1rem', right: '1rem', left: 'auto', width: '35px', height: '35px' }} onClick={toggleSidebar}>
+                <button className="menu-toggle" onClick={toggleSidebar}>
                     <FaTimes />
                 </button>
 

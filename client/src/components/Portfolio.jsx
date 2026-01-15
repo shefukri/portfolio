@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Sidebar from './Sidebar';
 import SectionCard from './SectionCard';
 import { FaGithub, FaLinkedin, FaInstagram, FaBars } from 'react-icons/fa';
-// Import dependencies that were in App.jsx. Warning: CSS import might need adjustment if relative path changes.
-// Since this is in components/, '../App.css' might be needed if keeping single CSS.
-// But App.css is in src/. So '../App.css' is correct.
 import '../App.css';
 
 function Portfolio() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
-    // Sidebar state was removed, consistent with executed tasks
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [formStatus, setFormStatus] = useState(null);
     const [activeSection, setActiveSection] = useState('about');
@@ -71,6 +69,10 @@ function Portfolio() {
         }
     };
 
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
     if (loading) {
         return <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}>Loading Portfolio...</div>;
     }
@@ -87,6 +89,18 @@ function Portfolio() {
 
     return (
         <div className="app-container">
+            <Sidebar
+                data={data}
+                isOpen={isSidebarOpen}
+                toggleSidebar={toggleSidebar}
+                activeSection={activeSection}
+            />
+
+            {/* Mobile Menu Toggle Button */}
+            <button className="menu-toggle-btn" onClick={toggleSidebar}>
+                <FaBars />
+            </button>
+
             {/* Split Layout Container */}
             <div className="split-layout">
 

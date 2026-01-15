@@ -1,91 +1,360 @@
+:root {
+  --primary: #8b5cf6;
+  --primary-dark: #7c3aed;
+  --secondary: #ec4899;
+  --bg-dark: #0f172a;
+  --bg-layer-2: #1e293b;
+  --bg-layer-3: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border-color: #334155;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
+}
+
 .app-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   background-color: var(--bg-dark);
   position: relative;
-  overflow: hidden;
 }
 
-/* Split Layout */
+/* =========================================
+   Sidebar / Navigation (Mobile Drawer)
+   ========================================= */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.menu-toggle-btn {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 900;
+  /* Below sidebar (1000) but above content */
+  background: var(--bg-layer-2);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 44px;
+  /* Touch target */
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar .menu-toggle {
+  /* Close button inside sidebar */
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile {
+  text-align: center;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+}
+
+.sidebar h1 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.sidebar .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.nav-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--primary);
+}
+
+.sidebar .social-links,
+.sidebar .footer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  color: var(--text-secondary);
+}
+
+.sidebar .social-icon {
+  color: inherit;
+  font-size: 1.2rem;
+  transition: 0.2s;
+}
+
+.sidebar .social-icon:hover {
+  color: var(--primary);
+}
+
+/* =========================================
+   Main Layout (Split Logic)
+   ========================================= */
 .split-layout {
   display: flex;
+  flex-direction: column;
+  /* Mobile First: Stacked */
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
 }
 
+/* Image Pane (Top on Mobile) */
 .image-pane {
-  width: 35%;
-  height: 100vh;
-  position: sticky;
-  top: 0;
-  overflow: hidden;
-  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 40vh;
+  /* Shorter on mobile */
+  position: relative;
+  background: var(--bg-layer-2);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--bg-layer-2);
-}
-
-.image-pane::after {
-  /* Removed overlay as image is now circular profile style */
-  display: none;
+  overflow: hidden;
 }
 
 .hero-image {
-  width: 70%;
-  aspect-ratio: 1/1;
-  object-fit: cover;
-  display: block;
+  width: 180px;
+  /* Fixed smaller size for mobile */
+  height: 180px;
   border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary);
   box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
-  border: 4px solid var(--primary);
-  transition: all 0.5s ease;
-  position: relative;
   z-index: 5;
-  margin-bottom: 20vh;
-  /* Make room for text if standard layout */
 }
 
-.image-pane:hover .hero-image {
-  transform: scale(1.05);
-  box-shadow: 0 0 50px rgba(139, 92, 246, 0.5);
-}
-
-.content-pane {
-  width: 65%;
-  height: 100vh;
-  overflow-y: auto;
-  padding: 6rem 4rem;
-  /* Increased padding */
-  background: var(--bg-dark);
-  scroll-behavior: smooth;
+.hero-overlay-content {
+  /* On mobile, this overlays the image or sits below? */
+  /* Let's keep it overlay for visual impact */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem;
+  background: linear-gradient(0deg, rgba(15, 23, 42, 1) 10%, rgba(15, 23, 42, 0.6) 50%, rgba(15, 23, 42, 0) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Center content */
+  text-align: center;
+  z-index: 10;
 }
 
-/* Sidebar Styles Removed */
+.hero-name {
+  font-size: clamp(2rem, 8vw, 3rem);
+  /* Responsive type */
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, #fff, var(--primary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-/* Reusable Components Styling in split context */
-.section-container {
-  min-height: auto;
-  /* Let content dictate height completely */
+.hero-role {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.hero-tagline {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  display: none;
+  /* Hide tagline on very small screens to save space */
+}
+
+@media (min-width: 480px) {
+  .hero-tagline {
+    display: block;
+  }
+}
+
+.hero-actions {
   display: flex;
-  flex-direction: column;
-  /* Removed justify-content: center to prevent vertical squishing */
-  margin-bottom: 20vh;
-  /* Huge spacing between main sections */
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.9rem;
+  min-height: 44px;
+  /* Touch target */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Content Pane (Bottom on Mobile) */
+.content-pane {
   width: 100%;
-  max-width: 1100px;
-  scroll-margin-top: 4rem;
+  padding: 3rem 1.5rem;
+  background: var(--bg-dark);
+}
+
+/* =========================================
+   Desktop Layout (> 900px)
+   ========================================= */
+@media (min-width: 900px) {
+  .split-layout {
+    flex-direction: row;
+    height: 100vh;
+    overflow: hidden;
+    /* Lock body scroll */
+  }
+
+  .image-pane {
+    width: 35%;
+    height: 100vh;
+    position: relative;
+    /* Not sticky, just left side */
+  }
+
+  .hero-image {
+    width: 70%;
+    height: auto;
+    aspect-ratio: 1/1;
+    margin-bottom: 20vh;
+    /* Offset */
+  }
+
+  .hero-overlay-content {
+    align-items: flex-start;
+    text-align: left;
+    padding: 4rem;
+    background: linear-gradient(0deg, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(15, 23, 42, 0) 100%);
+  }
+
+  .content-pane {
+    width: 65%;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 6rem 4rem;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide Hamburger on Desktop? Or keep sidebar as persistent? */
+  /* User: "Replace the desktop navigation bar with a mobile hamburger menu". 
+       Wait, usually desktop has visible nav. But request says toggle menu on click.
+       Let's Keep hamburger visible OR make sidebar persistent on left?
+       Implementation Plan said: "Desktop: Persistent left-side navigation".
+       Let's stick to the classic Split layout where Sidebar is a Drawer even on Desktop?
+       Actually, Split layout has Image Pane. Sidebar might cover it.
+       Let's make Sidebar a proper Drawer appearing over content. */
+}
+
+/* =========================================
+   Components
+   ========================================= */
+
+/* Section Card */
+.section-container {
+  margin-bottom: 6rem;
+  scroll-margin-top: 2rem;
 }
 
 .section-title {
-  font-size: 2.5rem;
-  margin-bottom: 4rem;
-  /* More space title-to-content */
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  margin-bottom: 2rem;
   color: var(--primary);
   font-weight: 700;
 }
@@ -93,39 +362,71 @@
 .card {
   background: var(--bg-layer-2);
   border: 1px solid var(--border-color);
-  border-radius: 24px;
-  padding: 3rem;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  margin-bottom: 2rem;
-  /* Add margin to card itself just in case */
+  border-radius: 20px;
+  padding: 2rem;
+  /* Reduced padding on mobile */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-/* ... skipped ... */
+@media (min-width: 768px) {
+  .card {
+    padding: 3rem;
+  }
+}
 
-/* Project Grid */
+/* Projects Grid */
 .projects-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 5rem;
-  /* Massive gap for projects */
+  gap: 2rem;
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .projects-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* ... skipped ... */
+.project-tag {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: var(--bg-layer-3);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+/* Contact Form */
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-layer-3);
+  color: white;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.form-input:focus {
+  outline: 2px solid var(--primary);
+  border-color: transparent;
+}
 
 /* Timeline */
 .timeline-item {
+  padding-left: 1.5rem;
   border-left: 2px solid var(--secondary);
-  padding-left: 2rem;
-  margin-bottom: 6rem;
-  /* Massive space for timeline items */
   position: relative;
-  padding-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
 .timeline-item::before {
@@ -139,6 +440,32 @@
   border-radius: 50%;
 }
 
+/* Footer / Signature */
+.pane-footer {
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 2rem;
+  margin-top: 4rem;
+}
+
+.signature .cursive {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.footer-socials {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0;
+  font-size: 1.5rem;
+}
+
+.footer-socials a {
+  color: var(--text-secondary);
+}
+
 /* Skills */
 .skills-container {
   display: flex;
@@ -147,382 +474,24 @@
 }
 
 .skill-badge {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.2rem;
   background: rgba(139, 92, 246, 0.1);
   border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: 20px;
+  border-radius: 30px;
   color: var(--primary);
-  font-weight: bold;
-}
-
-.pane-footer {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.footer-content {
-  text-align: center;
-}
-
-.signature {
-  display: block;
-  font-size: 1rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-}
-
-.signature .cursive {
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.6rem;
-  color: var(--primary);
-  margin-left: 0.5rem;
-}
-
-.footer-socials {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  margin: 1rem 0;
-}
-
-.footer-socials a {
-  font-size: 1.4rem;
-  color: var(--text-secondary);
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.footer-socials a:hover {
-  color: var(--primary);
-  transform: translateY(-3px);
-}
-
-.copyright {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-/* Contact Section Styles */
-.contact-container {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-  /* Increased from 2rem */
-}
-
-.contact-info {
-  margin-bottom: 1rem;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-}
-
-.contact-info strong {
-  color: var(--primary);
-  margin-right: 0.5rem;
-}
-
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.form-input {
-  width: 100%;
-  background: var(--bg-layer-3);
-  border: 1px solid var(--border-color);
-  padding: 1rem;
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-family: inherit;
-  transition: border-color 0.3s, background 0.3s;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  background: var(--bg-layer-2);
-}
-
-.submit-btn {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 1rem 2.5rem;
-  border-radius: 8px;
   font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
-  align-self: flex-start;
+  font-size: 0.9rem;
 }
 
-.submit-btn:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
-}
-
-.form-note {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
-/* Responsive Mobile */
-@media (max-width: 900px) {
-  .split-layout {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .image-pane {
-    width: 100%;
-    height: 40vh;
-    position: relative;
-  }
-
-  .content-pane {
-    width: 100%;
-    height: auto;
-    overflow-y: visible;
-    padding: 2rem 1.5rem;
-  }
-
-  .menu-toggle {
-    left: auto;
-    right: 1.5rem;
-    /* Move toggle to right on mobile if desired, or keep left */
-    background: rgba(0, 0, 0, 0.5);
-    /* Improve visibility over image */
-  }
-}
-
-/* Form Status Messages */
+/* Utility / Helpers */
 .success-msg {
   color: #4ade80;
-  /* Green */
-  background: rgba(74, 222, 128, 0.1);
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid rgba(74, 222, 128, 0.2);
-  margin-top: 1rem;
   text-align: center;
+  margin-top: 1rem;
 }
 
 .error-msg {
   color: #f87171;
-  /* Red */
-  background: rgba(248, 113, 113, 0.1);
-  padding: 0.8rem;
-  border-radius: 8px;
-  border: 1px solid rgba(248, 113, 113, 0.2);
+  text-align: center;
   margin-top: 1rem;
-  text-align: center;
-}
-
-/* Hero Section Styles */
-.hero-overlay-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 4rem;
-  background: linear-gradient(0deg, rgba(10, 10, 10, 1) 0%, rgba(10, 10, 10, 0.8) 50%, rgba(10, 10, 10, 0) 100%);
-  color: white;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-start;
-  opacity: 0;
-  animation: slideUpFade 1s ease-out 0.5s forwards;
-}
-
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.hero-name {
-  font-size: 3.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  letter-spacing: -1px;
-  background: linear-gradient(90deg, #fff, var(--primary));
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.hero-role {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 1rem;
-}
-
-.hero-tagline {
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-  max-width: 80%;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn {
-  padding: 0.8rem 2rem;
-  border-radius: 8px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  border: 1px solid var(--primary);
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: white;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: white;
-  transform: translateY(-2px);
-}
-
-/* Mobile adjustments for Hero */
-@media (max-width: 900px) {
-  .hero-overlay-content {
-    padding: 2rem;
-    align-items: center;
-    text-align: center;
-  }
-
-  .hero-name {
-    font-size: 2.5rem;
-  }
-
-  .hero-tagline {
-    max-width: 100%;
-  }
-}
-
-/* Sidebar Profile & Nav styles removed */
-
-/* About Section Styles */
-.about-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.about-intro {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  color: var(--text-primary);
-}
-
-.about-highlights {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  margin: 1rem 0;
-}
-
-.about-highlights li {
-  position: relative;
-  padding-left: 1.5rem;
-  font-size: 1.05rem;
-  color: var(--text-secondary);
-}
-
-.about-highlights li::before {
-  content: '▹';
-  position: absolute;
-  left: 0;
-  color: var(--primary);
-  font-weight: bold;
-}
-
-.about-closing {
-  font-style: italic;
-  color: var(--text-secondary);
-  border-left: 3px solid var(--primary);
-  padding-left: 1rem;
-}
-
-/* Stats metrics styling */
-.stats-container {
-  display: flex;
-  justify-content: space-around;
-  gap: 1rem;
-  margin-bottom: 6rem;
-  /* Spacing before next section */
-  flex-wrap: wrap;
-}
-
-.stat-card {
-  background: var(--bg-layer-3);
-  border: 1px solid var(--border-color);
-  padding: 1.5rem 2rem;
-  border-radius: 16px;
-  text-align: center;
-  flex: 1;
-  min-width: 120px;
-  transition: transform 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  background: var(--bg-layer-2);
-}
-
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
