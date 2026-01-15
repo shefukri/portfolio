@@ -156,6 +156,21 @@ let db;
         // Direct Test Route
         app.get('/sys/ping', (req, res) => res.send('pong'));
 
+        // Serve Static Frontend Assets (ONLY IN PRODUCTION)
+        // MOVED HERE: Must be registered AFTER API routes
+        if (process.env.NODE_ENV === 'production') {
+            const clientBuildPath = path.join(__dirname, '../client/dist');
+            console.log("PRODUCTION MODE: Serving static files from:", clientBuildPath);
+            app.use(express.static(clientBuildPath));
+
+            // Catch-All Route for SPA
+            app.use((req, res) => {
+                res.sendFile('index.html', { root: clientBuildPath });
+            });
+        } else {
+            console.log("DEVELOPMENT MODE: Static files content parsing skipped (use Vite on port 5173)");
+        }
+
         // Start Server inside DB connection to ensure DB is ready
         app.listen(PORT, () => {
             console.log(`Server running on http://localhost:${PORT}`);
@@ -215,19 +230,5 @@ app.get('/api/portfolio', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-
-// Serve Static Frontend Assets (ONLY IN PRODUCTION)
-if (process.env.NODE_ENV === 'production') {
-    const clientBuildPath = path.join(__dirname, '../client/dist');
-    console.log("PRODUCTION MODE: Serving static files from:", clientBuildPath);
-    app.use(express.static(clientBuildPath));
-
-    // Catch-All Route for SPA
-    app.use((req, res) => {
-        res.sendFile('index.html', { root: clientBuildPath });
-    });
-} else {
-    console.log("DEVELOPMENT MODE: Static files content parsing skipped (use Vite on port 5173)");
-}
 
 

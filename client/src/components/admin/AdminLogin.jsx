@@ -21,7 +21,6 @@ const AdminLogin = () => {
             const response = await axios.post(API_URL, { password });
 
             if (response.data.success) {
-                // alert("DEBUG: Login Success! Token: " + response.data.token.substring(0, 10));
                 localStorage.setItem('adminToken', response.data.token);
 
                 setTimeout(() => {
@@ -29,13 +28,11 @@ const AdminLogin = () => {
                 }, 100);
             } else {
                 setLoading(false);
-                alert("DEBUG: Server returned success: false");
             }
         } catch (err) {
             setLoading(false);
             console.error("Login Error:", err);
             const msg = err.response?.data?.error || err.message || 'Login Failed';
-            alert("LOGIN ERROR: " + msg);
             setError(`Error: ${msg}`);
         }
     };
